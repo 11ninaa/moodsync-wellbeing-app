@@ -1,12 +1,22 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+
+const MOOD_OPTIONS = [
+    'Високо ниво на ентузијазам',
+    'Стабилно',
+    'Премореност и исцрпеност',
+    'Анксиозност и притисок',
+    'Апатија и демотивираност',
+];
+
+const initialFormState = {
+    mood: 'Стабилно',
+    sleepHours: 7,
+    stressLevel: 3,
+    note: '',
+};
 
 export default function MoodForm({ onEntrySubmit }) {
-    const [formData, setFormData] = useState({
-        mood: 'Стабилно',
-        sleepHours: 7,
-        stressLevel: 3,
-        note: '',
-    });
+    const [formData, setFormData] = useState(initialFormState);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -16,58 +26,76 @@ export default function MoodForm({ onEntrySubmit }) {
     const handleSubmit = (e) => {
         e.preventDefault();
         onEntrySubmit(formData);
-        setFormData({ mood: 'Стабилно', sleepHours: 7, stressLevel: 3, note: '' });
+        setFormData(initialFormState);
     };
-
-    const cardStyle = {
-        backgroundColor: '#111827',
-        padding: '30px',
-        borderRadius: '16px',
-        boxShadow: '0 10px 30px rgba(0, 0, 0, 0.4)',
-        border: '1px solid #1f2937',
-        boxSizing: 'border-box'
-    };
-
-    const labelStyle = { display: 'block', fontWeight: '600', marginBottom: '8px', color: '#9ca3af', fontSize: '0.85rem' };
-    const inputStyle = { width: '100%', padding: '12px 14px', borderRadius: '8px', border: '1px solid #374151', backgroundColor: '#1f2937', color: '#f9fafb', fontSize: '0.95rem', boxSizing: 'border-box', outline: 'none', marginBottom: '20px' };
 
     return (
-        <div style={cardStyle}>
-            <h2 style={{ fontSize: '1.3rem', fontWeight: '700', color: '#f8fafc', marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '0.05em', borderLeft: '4px solid #38bdf8', paddingLeft: '12px' }}>
-                Клинички параметри
-            </h2>
+        <div className="card">
+            <h2 className="card-title">Дневен запис</h2>
             <form onSubmit={handleSubmit}>
-                <div>
-                    <label style={labelStyle}>Примарна афективна состојба</label>
-                    <select name="mood" value={formData.mood} onChange={handleInputChange} style={inputStyle}>
-                        <option value="Високо ниво на ентузијазам">Високо ниво на ентузијазам</option>
-                        <option value="Стабилно">Стабилно / Балансирано</option>
-                        <option value="Премореност и исцрпеност">Премореност и исцрпеност</option>
-                        <option value="Анксиозност и притисок">Анксиозност и притисок</option>
-                        <option value="Апатија и демотивираност">Апатија и демотивираност</option>
+                <div className="field">
+                    <label className="field-label" htmlFor="mood">Расположение денес</label>
+                    <select
+                        id="mood"
+                        name="mood"
+                        value={formData.mood}
+                        onChange={handleInputChange}
+                        className="field-input"
+                    >
+                        {MOOD_OPTIONS.map((option) => (
+                            <option key={option} value={option}>{option}</option>
+                        ))}
                     </select>
                 </div>
 
-                <div>
-                    <label style={labelStyle}>Квантитет на сон во претходниот циклус (часови)</label>
-                    <input type="number" name="sleepHours" min="1" max="24" value={formData.sleepHours} onChange={handleInputChange} style={inputStyle} />
+                <div className="field">
+                    <label className="field-label" htmlFor="sleepHours">Часови сон претходната ноќ</label>
+                    <input
+                        id="sleepHours"
+                        type="number"
+                        name="sleepHours"
+                        min="1"
+                        max="24"
+                        value={formData.sleepHours}
+                        onChange={handleInputChange}
+                        className="field-input"
+                    />
                 </div>
 
-                <div style={{ marginBottom: '20px' }}>
-                    <label style={labelStyle}>Степен на перципиран психосоматски стрес (1 - Минимален, 10 - Акутен)</label>
-                    <input type="range" name="stressLevel" min="1" max="10" value={formData.stressLevel} onChange={handleInputChange} style={{ width: '100%', accentColor: '#38bdf8' }} />
-                    <div style={{ textAlign: 'right', fontSize: '0.85rem', color: '#38bdf8', marginTop: '6px', fontWeight: 'bold' }}>
+                <div className="field">
+                    <label className="field-label" htmlFor="stressLevel">
+                        Ниво на стрес (1 - минимален, 10 - висок)
+                    </label>
+                    <input
+                        id="stressLevel"
+                        type="range"
+                        name="stressLevel"
+                        min="1"
+                        max="10"
+                        value={formData.stressLevel}
+                        onChange={handleInputChange}
+                        className="field-range"
+                    />
+                    <div className="field-range-value">
                         Индекс: {formData.stressLevel} / 10
                     </div>
                 </div>
 
-                <div>
-                    <label style={labelStyle}>Забелешка за контекстот на состојбата</label>
-                    <input type="text" name="note" value={formData.note} onChange={handleInputChange} placeholder="Внесете екстерни фактори..." style={inputStyle} />
+                <div className="field">
+                    <label className="field-label" htmlFor="note">Забелешка (опционално)</label>
+                    <input
+                        id="note"
+                        type="text"
+                        name="note"
+                        value={formData.note}
+                        onChange={handleInputChange}
+                        placeholder="Што влијаеше денес?"
+                        className="field-input"
+                    />
                 </div>
 
-                <button type="submit" style={{ width: '100%', padding: '14px', backgroundColor: '#0284c7', color: '#ffffff', border: 'none', borderRadius: '8px', fontSize: '0.95rem', fontWeight: '700', cursor: 'pointer', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                    Пресметај вредности
+                <button type="submit" className="submit-button">
+                    Зачувај запис
                 </button>
             </form>
         </div>
